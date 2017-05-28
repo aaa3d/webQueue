@@ -45,6 +45,7 @@ public class queue implements Serializable {
     private String Name;
     
     @Getter
+    @Setter
     private String queueInfo;    
     
     @Getter
@@ -58,35 +59,12 @@ public class queue implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tail_id", insertable = true, columnDefinition = "integer")            
     talon tail;
+    
+    
+   
 
     
     
-    public boolean addNewTalon(){
-
-        //определить максимальный номер в очереди 
-        
-        talon newTalon = new talon(this.getTail());  //увеличит номер, прсвоит tail next talon
-
-        if (this.getHead()==null)
-            this.setHead(newTalon);
-
-        this.setTail(newTalon);
-        
-        fillQueueInfo();
-        return true;
-    }    
-    
-    
-    private void fillQueueInfo(){
-        queueInfo = "";
-        talon t = this.head;
-        while (t != null){
-            if (queueInfo.length()!=0)
-                queueInfo += " ";
-            queueInfo += t.getNumber();
-            t = t.getNextTalon();
-        }
-    }
 
     
 }

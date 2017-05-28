@@ -38,6 +38,7 @@ public class talon implements Serializable {
     
     @Column(columnDefinition = "integer")
     @Getter
+    @Setter
     private int  number;
     
     @Getter

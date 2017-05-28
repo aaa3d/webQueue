@@ -61,7 +61,7 @@ public class terminal {
         
         queue q = (queue) sessionFactory.getCurrentSession().load(queue.class, buttonTag);
         if (q != null){
-            q.addNewTalon();
+            appContext.makeNewTalon(q);
             sessionFactory.getCurrentSession().save(q);
         }
 

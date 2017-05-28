@@ -40,7 +40,7 @@ public class admin {
         List<queue> list = null;
         
         
-    	//Загрузка объектов из БД
+    	//Р—Р°РіСЂСѓР·РєР° РѕР±СЉРµРєС‚РѕРІ РёР· Р‘Р”
         if (criteria!=null){
             list = criteria.list();
             mav.addObject("queueList", list);  
@@ -49,7 +49,7 @@ public class admin {
             
         }
         
-        //вернуть окно терминала
+        //РІРµСЂРЅСѓС‚СЊ РѕРєРЅРѕ С‚РµСЂРјРёРЅР°Р»Р°
     return  mav;
     }
     
@@ -57,7 +57,7 @@ public class admin {
     @Transactional
     @RequestMapping(value = "/onButtonClick/{buttonTag}",method = RequestMethod.GET)
     public ModelAndView onButtonClick(@PathVariable("buttonTag") String buttonTag){
-        //операции по обработке нажатия кнопки
+        //РѕРїРµСЂР°С†РёРё РїРѕ РѕР±СЂР°Р±РѕС‚РєРµ РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё
         System.out.println("admin/onButtonClick: "+buttonTag);
         
         if (buttonTag.compareTo("add_queue")==0){
