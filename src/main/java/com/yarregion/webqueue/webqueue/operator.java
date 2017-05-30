@@ -23,47 +23,35 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 
-@RequestMapping(value = "/terminal")
-public class terminal {
+@RequestMapping(value = "/operator")
+public class operator {
     
-     @Autowired	private SessionFactory sessionFactory;
+    @Autowired	private SessionFactory sessionFactory;
     
     @Transactional
-    @RequestMapping(value = "/view",method = RequestMethod.GET)
-    public ModelAndView  terminal_view(){
+    @RequestMapping(value = "/view/{queue_id}",method = RequestMethod.GET)
+    public ModelAndView  operator_view_queue(@PathVariable("queue_id") int queue_id){
+        ModelAndView mav = new ModelAndView("operator") ;
         
-        
-        ModelAndView mav = new ModelAndView("terminal") ;
-        org.hibernate.Criteria criteria = null;
-        
-        criteria = sessionFactory.getCurrentSession().createCriteria(queue.class);
-        List<queue> list = null;
-        
-        
-    	//Загрузка объектов из БД
-        if (criteria!=null){
-            list = criteria.list();
-            mav.addObject("queueList", list);  
-            return mav;
+        queue q = (queue) sessionFactory.getCurrentSession().get(queue.class, queue_id);
+        if (q != null){
+            mav.addObject(q);
         }
-        
-        //вернуть окно терминала
     return  mav;
     }
     
     @Transactional
-    @RequestMapping(value = "/onButtonClick/{buttonTag}",method = RequestMethod.GET)
-    public ModelAndView onButtonClick(@PathVariable("buttonTag") int buttonTag){
+    @RequestMapping(value = "/onButtonClick/{queue_id}/{buttonTag}",method = RequestMethod.GET)
+    public ModelAndView onButtonClick(@PathVariable("buttonTag") String buttonTag, @PathVariable("queue_id") int queue_id){
         //операции по обработке нажатия кнопки
         System.out.println("onButtonClick: "+buttonTag);
-        
 
-        
         queue q = (queue) sessionFactory.getCurrentSession().get(queue.class, buttonTag);
         if (q != null){
-            appContext.makeNewTalon(q); //в базу записывает сам, т.к. Transactional ?
+            appContext.callNextTalon(q); //в базу записывает сам, т.к. Transactional ?
         }
-        return terminal_view();
+        
+        return operator_view_queue(queue_id);
     }
     
     

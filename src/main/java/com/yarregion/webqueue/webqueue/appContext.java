@@ -53,6 +53,7 @@ public class appContext  {
     
     public static void makeNewTalon( queue queue){
         talon t = new talon();
+        t.setQueue(queue);
         
         if (getTailTalon() != null){
             t.setNumber(getTailTalon().getNumber()+1);
@@ -61,11 +62,21 @@ public class appContext  {
         else{
             t.setNumber(1);
         }
+        setTailTalon(t);
+        
+        
         if (queue.getTail()!=null){
             queue.getTail().setNextTalon(t);
-            queue.setTail(t);
+            
         }
-        updatelQueueInfo(queue);
+        queue.setTail(t);
+        
+        
+        if (queue.getHead()==null)
+            queue.setHead((t));
+        
+        
+        updateQueueInfo(queue);
         
     }
     
@@ -74,12 +85,12 @@ public class appContext  {
             return;
         
         queue.setHead(queue.getHead().getNextTalon());
-        updatelQueueInfo(queue);
+        updateQueueInfo(queue);
     }
     
-    private static void updatelQueueInfo(queue queue){
+    private static void updateQueueInfo(queue queue){
         String queueInfo = "";
-        talon t = queue.head;
+        talon t = queue.getHead();
         while (t != null){
             if (queueInfo.length()!=0)
                 queueInfo += " ";

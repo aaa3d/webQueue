@@ -28,7 +28,7 @@
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-        <property name="url" value="jdbc:sqlserver://192.168.100.1:1433;DatabaseName=webQueue" />
+        <property name="url" value="jdbc:sqlserver://taxi.dyndns.org:1433;DatabaseName=webQueue" />
         <property name="username" value="taxaadmin" />
         <property name="password" value="654321" />
     </bean>

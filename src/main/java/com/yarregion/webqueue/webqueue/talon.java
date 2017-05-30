@@ -34,7 +34,7 @@ public class talon implements Serializable {
 
     @Getter
     @Setter
-    private String Name;
+    private String name;
     
     @Column(columnDefinition = "integer")
     @Getter
@@ -49,6 +49,13 @@ public class talon implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "next_id", insertable = true, columnDefinition = "integer")
     private talon nextTalon;
+    
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "queue_id", insertable = true, columnDefinition = "integer")
+    private queue queue;
+    
     
     
     public talon(){

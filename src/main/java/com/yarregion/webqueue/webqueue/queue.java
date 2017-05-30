@@ -42,7 +42,11 @@ public class queue implements Serializable {
     
     @Getter
     @Setter
-    private String Name;
+    private String name;
+    
+    @Getter
+    @Setter
+    private String prefix;
     
     @Getter
     @Setter
@@ -52,13 +56,13 @@ public class queue implements Serializable {
     @Setter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "head_id", insertable = true, columnDefinition = "integer")
-    talon head;
+    private talon head;
     
     @Getter
     @Setter
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tail_id", insertable = true, columnDefinition = "integer")            
-    talon tail;
+    private talon tail;
     
     
    
