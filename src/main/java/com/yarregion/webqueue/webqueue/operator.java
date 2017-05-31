@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class operator {
     
     @Autowired	private SessionFactory sessionFactory;
+    @Autowired private appContext appContext;
     
     @Transactional
     @RequestMapping(value = "/view/{queue_id}",method = RequestMethod.GET)
@@ -42,11 +43,11 @@ public class operator {
     
     @Transactional
     @RequestMapping(value = "/onButtonClick/{queue_id}/{buttonTag}",method = RequestMethod.GET)
-    public ModelAndView onButtonClick(@PathVariable("buttonTag") String buttonTag, @PathVariable("queue_id") int queue_id){
+    public ModelAndView onButtonClick(@PathVariable("queue_id") int queue_id, @PathVariable("buttonTag") String buttonTag ){
         //операции по обработке нажатия кнопки
         System.out.println("onButtonClick: "+buttonTag);
 
-        queue q = (queue) sessionFactory.getCurrentSession().get(queue.class, buttonTag);
+        queue q = (queue) sessionFactory.getCurrentSession().get(queue.class, queue_id);
         if (q != null){
             appContext.callNextTalon(q); //в базу записывает сам, т.к. Transactional ?
         }

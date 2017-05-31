@@ -5,21 +5,10 @@
  */
 package com.yarregion.webqueue.webqueue;
 
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import lombok.Getter;
-import lombok.Setter;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 
 
@@ -27,42 +16,34 @@ import lombok.Setter;
  *
  * @author istorozhev
  */
-
+@Controller
 public class appContext  {
    
-
-    @Getter
-    @Setter
-    private static String Name;
+    @Autowired	private SessionFactory sessionFactory;
+    
+    public context getContext(){
+        context c = (context) sessionFactory.getCurrentSession().get(context.class, 1500);
+        if (c == null){
+            c = new context();
+            c.setId(1500);
+            sessionFactory.getCurrentSession().save(c);
+        }
+        return c;
+    }
     
     
-    
-    @Getter
-    @Setter
-    static talon tailTalon;
-    
-    
-    
-    
-    @Getter
-    @Setter
-    private static Set<queue> queue_set = new HashSet<queue>();
-    
-    
-    
-    
-    public static void makeNewTalon( queue queue){
+    public void makeNewTalon( queue queue){
         talon t = new talon();
         t.setQueue(queue);
         
-        if (getTailTalon() != null){
-            t.setNumber(getTailTalon().getNumber()+1);
-            setTailTalon(t);
+        if (getContext().getTailTalon() != null){
+            t.setNumber(getContext().getTailTalon().getNumber()+1);
+            getContext().setTailTalon(t);
         }
         else{
             t.setNumber(1);
         }
-        setTailTalon(t);
+        getContext().setTailTalon(t);
         
         
         if (queue.getTail()!=null){
@@ -80,15 +61,17 @@ public class appContext  {
         
     }
     
-    public static void callNextTalon(queue queue){
+    public void callNextTalon(queue queue){
         if (queue.getHead()==null)
             return;
         
         queue.setHead(queue.getHead().getNextTalon());
+        if (queue.getHead()==null)
+            queue.setTail(null);
         updateQueueInfo(queue);
     }
     
-    private static void updateQueueInfo(queue queue){
+    private void updateQueueInfo(queue queue){
         String queueInfo = "";
         talon t = queue.getHead();
         while (t != null){

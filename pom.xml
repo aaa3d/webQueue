@@ -21,6 +21,7 @@
         <junit.version>4.11</junit.version>
         <hibernateVersion>4.3.11.Final</hibernateVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <h2.version>1.4.190</h2.version>
     </properties>
 
     <dependencies>
@@ -30,13 +31,16 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${springframework.version}</version>
+            <!--
             <exclusions>
-                <!-- Exclude Commons Logging in favor of SLF4j -->
+                
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+            
+            -->
         </dependency>
     
     
@@ -180,6 +184,11 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>sqljdbc4</artifactId>
             <version>4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
 		
         <dependency>

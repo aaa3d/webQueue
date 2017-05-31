@@ -10,14 +10,21 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 import org.hibernate.annotations.Type;
 
 
@@ -54,14 +61,15 @@ public class queue implements Serializable {
     
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "head_id", insertable = true, columnDefinition = "integer")
+    @ManyToOne(cascade=CascadeType.ALL , fetch = FetchType.LAZY)
+    @JoinColumn(name = "head_id", insertable = true, columnDefinition = "integer", foreignKey = @ForeignKey(name = "FK_QUEUE_HEAD_TALON"))
     private talon head;
     
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "tail_id", insertable = true, columnDefinition = "integer")            
+    @ManyToOne(cascade=CascadeType.ALL , fetch = FetchType.LAZY)
+    @OnDelete(action=CASCADE)
+    @JoinColumn(name = "tail_id", insertable = true, columnDefinition = "integer", foreignKey = @ForeignKey(name = "FK_QUEUE_TAIL_TALON"))            
     private talon tail;
     
     

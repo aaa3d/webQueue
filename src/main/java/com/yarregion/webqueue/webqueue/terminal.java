@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class terminal {
     
      @Autowired	private SessionFactory sessionFactory;
+     @Autowired private appContext appContext;
     
     @Transactional
     @RequestMapping(value = "/view",method = RequestMethod.GET)

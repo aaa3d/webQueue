@@ -14,8 +14,9 @@
         
         <c:set var = "head" scope = "session" value = "${queue.head}"/>
         <c:if test="${head !=null}">
-            <p><a href="<c:url value="/operator/onButtonClick/${queue.id}/callNext"/>">Следующий</a></p>
+            <p><a href="<c:url value="/operator/onButtonClick/${queue.id}/callNext"/>">Следующий талон №${queue.head.number}</a></p>
         </c:if>
+        <c:out value="${queue.queueInfo}"/>
         
         
         
