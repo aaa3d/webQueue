@@ -23,7 +23,9 @@
     <mvc:resources mapping="/js/**" location="/WEB-INF/js/" />
     
     <context:annotation-config />
-    <context:component-scan base-package="com.yarregion.webqueue.webqueue" />
+    <context:component-scan base-package="com.yarregion.webqueue.webqueue,com.istorozhev.trading" />
+    
+    
     
     <bean id="dataSourceMSSQL"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -31,6 +33,19 @@
         <property name="url" value="jdbc:sqlserver://taxi.dyndns.org:1433;DatabaseName=webQueue" />
         <property name="username" value="taxaadmin" />
         <property name="password" value="654321" />
+    </bean>
+    
+    <bean id="dataSourceAruba"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="jdbc:postgresql://aruba.dyndns.org:5432/trade" />
+        <property name="username" value="postgres" />
+        <property name="password" value="`[)hDX8_x3)rTp7c" />
+        <property name="hibernate.c3p0.min_size" value="5"/>
+        <property name="hibernate.c3p0.max_size" value="20"/>
+        <property name="hibernate.c3p0.timeout" value="300"/>
+        <property name="hibernate.c3p0.max_statements" value="50"/>
+        <property name="hibernate.c3p0.idle_test_period" value="3000"/>
     </bean>
     
     <bean id="dataSourceH2"
@@ -42,10 +57,10 @@
     </bean>
     
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSourceH2" />
+        <property name="dataSource" ref="dataSourceAruba" />
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.connection.release_mode">auto</prop>
@@ -54,17 +69,51 @@
                 <prop key="hibernate.connection.CharSet">utf8</prop>
                 <prop key="hibernate.connection.characterEncoding">utf8</prop>
                 <prop key="hibernate.connection.useUnicode">true</prop>
+                <prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
+                <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
             </props>
         </property>
         <property name="packagesToScan" value="com.yarregion.webqueue.webqueue" />
 		
     </bean>   
     
-      <tx:annotation-driven transaction-manager="transactionManager"/>    
+    <bean id="sessionFactoryAruba" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceAruba" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.connection.release_mode">auto</prop>
+                <prop key="hibernate.connection.autocommit">false</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.connection.CharSet">utf8</prop>
+                <prop key="hibernate.connection.characterEncoding">utf8</prop>
+                <prop key="hibernate.connection.useUnicode">true</prop>
+                <prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
+                <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+                
+
+            </props>
+        </property>
+        <property name="packagesToScan" value="com.istorozhev.trading.helper" />
+		
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/>    
+    <tx:annotation-driven transaction-manager="transactionManagerAruba"/>    
+
+    <bean id = "databaseHelper" class = "com.istorozhev.trading.helper.databaseHelper"/>
     <bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+              class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
+    
+    <bean id="transactionManagerAruba"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactoryAruba" />
+    </bean>    
+
     
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
@@ -80,9 +129,15 @@
           p:suffix=".jsp"/>
     
     
-    <bean id = "appContext" class = "com.yarregion.webqueue.webqueue.appContext">
+   <bean id = "appContext" class = "com.yarregion.webqueue.webqueue.appContext">
       
    </bean>
+   
+  
+      
+   
+   
+   
 
     <!--
     The index controller.
