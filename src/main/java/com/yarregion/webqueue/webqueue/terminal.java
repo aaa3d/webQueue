@@ -5,6 +5,9 @@
  */
 package com.yarregion.webqueue.webqueue;
 
+import com.istorozhev.trading.helper.databaseHelper;
+import com.istorozhev.trading.stock.stockImplExmo;
+import com.istorozhev.trading.stock.stockInterface;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.SessionFactory;
@@ -28,6 +31,7 @@ public class terminal {
     
      @Autowired	private SessionFactory sessionFactory;
      @Autowired private appContext appContext;
+     @Autowired private databaseHelper database;
     
     @Transactional
     @RequestMapping(value = "/view",method = RequestMethod.GET)
@@ -40,6 +44,9 @@ public class terminal {
         criteria = sessionFactory.getCurrentSession().createCriteria(queue.class);
         List<queue> list = null;
         
+         
+        
+        
         
     	//Загрузка объектов из БД
         if (criteria!=null){
@@ -47,6 +54,11 @@ public class terminal {
             mav.addObject("queueList", list);  
             return mav;
         }
+        
+        
+        
+        
+       
         
         //вернуть окно терминала
     return  mav;

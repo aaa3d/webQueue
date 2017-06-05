@@ -6,6 +6,7 @@
 package com.istorozhev.trading.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ import lombok.Setter;
  * 
  */
 @Entity
+@Table(name="t_order")
 public class order extends baseTradeModel{
     @Getter
     @Setter
