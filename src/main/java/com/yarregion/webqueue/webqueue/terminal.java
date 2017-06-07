@@ -6,7 +6,7 @@
 package com.yarregion.webqueue.webqueue;
 
 import com.istorozhev.trading.helper.databaseHelper;
-import com.istorozhev.trading.stock.stockImplExmo;
+import com.istorozhev.trading.stock.stockImplBtce;
 import com.istorozhev.trading.stock.stockInterface;
 import java.util.ArrayList;
 import java.util.List;

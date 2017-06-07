@@ -6,7 +6,7 @@
 package com.istorozhev.trading;
 
 import com.istorozhev.trading.helper.databaseHelper;
-import com.istorozhev.trading.stock.stockImplExmo;
+import com.istorozhev.trading.stock.stockImplBtce;
 import com.istorozhev.trading.stock.stockInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,8 +22,8 @@ public class tradingWorker {
     @Autowired databaseHelper database;
     @Scheduled(initialDelay = 20, fixedDelay=30000)
     public void doSomething() {
-        stockInterface exmo = new stockImplExmo();
-        exmo.loadData();
-        database.saveStockDataToDatabase(exmo);
+        stockInterface btce = new stockImplBtce();
+        btce.loadData();
+        database.saveStockDataToDatabase(btce);
     }
 }
