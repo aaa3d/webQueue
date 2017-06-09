@@ -25,55 +25,82 @@ import org.json.JSONObject;
  *
  * @author istorozhev
  */
-public class stockImplExmo implements stockInterface {
+public class stockImplExmo extends stockAbstract implements stockInterface{
 
+   
+    
+    public stockImplExmo(String _stock_name){
+        stock_name = _stock_name;
+    }
+    
+    public void loadServerInfo(){
+        //http://api.exmo.me/v1/ticker
+        /*
+        {"BTC_USD":{"buy_price":"2723.120012","sell_price":"2723.130011","last_trade":"2723.130011","high":"2748","low":"2644.5","avg":"2704.31958987","vol":"94.52161761","vol_curr":"254695.89531784","updated":1496991793},"BTC_EUR":{"buy_price":"2495.58900001","sell_price":"2499.99999","last_trade":"2500","high":"2527","low":"2424.677724","avg":"2478.78212333","vol":"62.23086942","vol_curr":"154046.74640422","updated":1496991834},"BTC_RUB":
+}
+        */
+        stockPairs.clear();
+        
+        HttpResponse<JsonNode> jsonResponse;
+        try {
+            jsonResponse = Unirest.get("http://api.exmo.me/v1/ticker")
+                    .header("accept", "application/json")
+                    .asJson();
+        
+            
+            for(String pair_name : jsonResponse.getBody().getObject().keySet()){
+                stockPairs.add(pair_name);
+                serverTime.set(1970, Calendar.JANUARY, 1, 0, 0,  0);
+                serverTime.add(Calendar.SECOND, jsonResponse.getBody().getObject().getJSONObject(pair_name).getInt("updated"));
+                
+            }
+        
+        
+        
+        } catch (Exception ex) {
+            Logger.getLogger(stockImplExmo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     public void loadTrades(){
         try {
             //здесь реализовать парсеры данных, раскладывание их в модели
             
            
-            
-            HttpResponse<JsonNode> jsonResponse = Unirest.get("https://btc-e.nz/api/3/trades/btc_usd")
+            String pairs = "";
+            for(String pair_name: stockPairs){
+                pairs = pairs+pair_name+",";
+            }
+            HttpResponse<JsonNode> jsonResponse = Unirest.get("http://api.exmo.me/v1/trades/?pair="+pairs)
                     .header("accept", "application/json")
-//                    .queryString("apiKey", "123")
-//                    .field("parameter", "value")
-//                    .field("foo", "bar")
                     .asJson();
             
-            JSONArray stock_trades = jsonResponse.getBody().getObject().getJSONArray("btc_usd");
-           /* try {
-                Unirest.shutdown();
-            } catch (IOException ex) {
-                Logger.getLogger(stockImplExmo.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            */
+            for(String pair_name: stockPairs){
+                JSONArray stock_trades = jsonResponse.getBody().getObject().getJSONArray(pair_name);
                 
-            
-            //fantastic!!! new object has array data from old object
-            trades.clear();
-            for( Object o : stock_trades){
-                
-                trade trade = new trade();
-                
-                JSONObject stock_trade = (JSONObject)o;
-                trade.setStock_name("BTC-E");
-                trade.setPrice(stock_trade.getDouble("price"));
-                trade.setAmount(stock_trade.getDouble("amount"));
-                trade.setSumm(trade.getPrice()*trade.getAmount());
-                
-                trade.setTrade_id(String.valueOf(stock_trade.getLong("tid")));
-                trade.setPair_name("btc_usd");
-                trade.setOperation(stock_trade.getString("type"));
-                Calendar cal = Calendar.getInstance();
-                cal.set(1970, Calendar.JANUARY, 1, 0, 0,  0);
-                cal.add(Calendar.SECOND, stock_trade.getInt("timestamp"));
-                
-                trade.setCreateDate(cal);
-                
-                trades.add(trade);
-//trade.get("amount")
-            
+                for( Object o : stock_trades){
+
+                    trade trade = new trade();
+
+                    JSONObject stock_trade = (JSONObject)o;
+                    trade.setStock_name(stock_name);
+                    trade.setPrice(stock_trade.getDouble("price"));
+                    trade.setAmount(stock_trade.getDouble("quantity"));
+                    trade.setSumm(trade.getPrice()*trade.getAmount());
+
+                    trade.setTrade_id(String.valueOf(stock_trade.getLong("trade_id")));
+                    trade.setPair_name(pair_name.toLowerCase());
+                    trade.setOperation(stock_trade.getString("type"));
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(1970, Calendar.JANUARY, 1, 0, 0,  0);
+                    cal.add(Calendar.SECOND, stock_trade.getInt("date"));
+
+                    trade.setCreateDate(cal);
+
+                    trades.add(trade);
+    //trade.get("amount")
+
+                }
             }
             
             System.out.append(jsonResponse.getRawBody().toString());
@@ -86,65 +113,65 @@ public class stockImplExmo implements stockInterface {
         try {
             //здесь реализовать парсеры данных, раскладывание их в модели
             
-           
+            String pairs = "";
             
-            HttpResponse<JsonNode> jsonResponse = Unirest.get("https://btc-e.nz/api/3/depth/btc_usd")
+            
+            
+            for(String pair_name: stockPairs){
+                pairs = pairs+pair_name+",";
+            }
+            HttpResponse<JsonNode> jsonResponse = Unirest.get("http://api.exmo.me/v1/order_book/?pair="+pairs)
                     .header("accept", "application/json")
-//                    .queryString("apiKey", "123")
-//                    .field("parameter", "value")
-//                    .field("foo", "bar")
                     .asJson();
-            
-            JSONObject operations = jsonResponse.getBody().getObject().getJSONObject("btc_usd");
-            JSONArray bids = operations.getJSONArray("bids");
-            JSONArray asks = operations.getJSONArray("asks");
-            
-            //one time for all
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.HOUR, -3);
-            
-            
-            System.out.println("CALENDAR="+cal.toString());
-            
-            
-           
-                
-            
-            
-            //fantastic!!! new object has array data from old object
-            orders.clear();
-            for( Object o : bids){
-                
-                order order = new order();
-                JSONArray stock_order = (JSONArray)o; 
-                order.setStock_name("BTC-E");
-                order.setPrice(Double.valueOf(stock_order.get(0).toString()));
-                order.setAmount(Double.valueOf(stock_order.get(1).toString()));
-                order.setSumm(order.getPrice()*order.getAmount());
-                order.setOperation("bid");
-                order.setPair_name("btc_usd");
-                
-                order.setCreateDate(cal);
-                orders.add(order);
+            for(String pair_name: stockPairs){
+                    JSONObject operations = jsonResponse.getBody().getObject().getJSONObject(pair_name);    
+                    JSONArray bids = operations.getJSONArray("bid");
+                    JSONArray asks = operations.getJSONArray("ask");
+                    
+                    orders = new java.util.ArrayList<order>();
+                    orderbook.setOrders(orders);
+                    orderbook.setAsk_quantity(operations.getDouble("ask_quantity"));
+                    orderbook.setAsk_quantity(operations.getDouble("ask_amount"));
+                    orderbook.setAsk_quantity(operations.getDouble("ask_top"));
+                    orderbook.setAsk_quantity(operations.getDouble("bid_quantity"));
+                    orderbook.setAsk_quantity(operations.getDouble("bid_amount"));
+                    orderbook.setAsk_quantity(operations.getDouble("bid_top"));
+                    
+
+                    
+                    for( Object o : bids){
+
+                        order order = new order();
+                        JSONArray stock_order = (JSONArray)o; 
+                        order.setStock_name(stock_name);
+                        order.setPrice(Double.valueOf(stock_order.get(0).toString()));
+                        order.setAmount(Double.valueOf(stock_order.get(1).toString()));
+                        order.setSumm(order.getPrice()*order.getAmount());
+                        order.setOperation("bid");
+                        order.setPair_name(pair_name.toLowerCase());
+
+                        order.setCreateDate(serverTime);
+                        orders.add(order);
+                    }
+
+                    for( Object o : asks){
+
+                        order order = new order();
+                        JSONArray stock_order = (JSONArray)o; 
+                        order.setStock_name(stock_name);
+                        order.setPrice(Double.valueOf(stock_order.get(0).toString()));
+                        order.setAmount(Double.valueOf(stock_order.get(1).toString()));
+
+                        order.setSumm(order.getPrice()*order.getAmount());
+                        order.setOperation("ask");
+                        order.setPair_name(pair_name.toLowerCase());
+
+                        order.setCreateDate(serverTime);
+                        orders.add(order);
+                    }
+
+                    System.out.append(jsonResponse.getRawBody().toString());
             }
-            
-            for( Object o : asks){
-                
-                order order = new order();
-                JSONArray stock_order = (JSONArray)o; 
-                order.setStock_name("BTC-E");
-                order.setPrice(Double.valueOf(stock_order.get(0).toString()));
-                order.setAmount(Double.valueOf(stock_order.get(1).toString()));
-                
-                order.setSumm(order.getPrice()*order.getAmount());
-                order.setOperation("ask");
-                order.setPair_name("btc_usd");
-                
-                order.setCreateDate(cal);
-                orders.add(order);
-            }
-            
-            System.out.append(jsonResponse.getRawBody().toString());
         } catch (UnirestException ex) {
             Logger.getLogger(stockImplExmo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -152,7 +179,10 @@ public class stockImplExmo implements stockInterface {
     
     @Override
     public void loadData() {
+        
+        loadServerInfo(); //загрузка времени сервера
         loadTrades();
+        
         loadOrders();
     }
 

@@ -28,7 +28,7 @@ public class databaseHelper {
     public void saveStockDataToDatabase(stockInterface stock){
         
         //save only new trades
-        for(trade trade:stock.trades){
+        for(trade trade:stock.getTrades()){
             Criteria crit = sessionFactory.getCurrentSession().createCriteria(trade.getClass());
             crit.add(Restrictions.eq("trade_id", trade.getTrade_id()));
             if (crit.list().size()==0)
@@ -37,10 +37,8 @@ public class databaseHelper {
         }
         
         //save all orders for this time
-        for(order order:stock.orders){
-                sessionFactory.getCurrentSession().save(order);
-            //sessionFactoryAruba.getCurrentSession().save(trade);
-        }
+        sessionFactory.getCurrentSession().save(stock.getOrderbook());
+        
         
         
     }

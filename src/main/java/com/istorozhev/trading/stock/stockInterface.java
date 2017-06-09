@@ -6,6 +6,7 @@
 package com.istorozhev.trading.stock;
 
 import com.istorozhev.trading.model.order;
+import com.istorozhev.trading.model.orderbook;
 import com.istorozhev.trading.model.ticker;
 import com.istorozhev.trading.model.trade;
 import java.util.ArrayList;
@@ -21,14 +22,9 @@ import lombok.Getter;
  * @author istorozhev
  */
 public interface stockInterface {
-    public List<order> orders = new java.util.ArrayList<order>();
-    List<trade> trades = new java.util.ArrayList<trade>();
-    ticker ticker = new ticker();
-    
-    List<String> stockPairs = new ArrayList<String>();
-    Calendar serverTime = Calendar.getInstance();;
-    
-    
-    
     public void loadData();
+    //public List<order> getOrders();
+    public List<trade> getTrades();
+    public orderbook getOrderbook();
+    
 }

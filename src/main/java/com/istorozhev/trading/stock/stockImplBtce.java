@@ -25,8 +25,13 @@ import org.json.JSONObject;
  *
  * @author istorozhev
  */
-public class stockImplBtce implements stockInterface {
+public class stockImplBtce extends stockAbstract implements stockInterface{
 
+    
+    
+    public stockImplBtce(String _stock_name){
+        stock_name = _stock_name;
+    }
     
     public void loadServerInfo(){
         //https://btc-e.nz/api/3/info
@@ -100,14 +105,19 @@ public class stockImplBtce implements stockInterface {
                     trade trade = new trade();
 
                     JSONObject stock_trade = (JSONObject)o;
-                    trade.setStock_name("BTC-E");
+                    trade.setStock_name(stock_name);
                     trade.setPrice(stock_trade.getDouble("price"));
                     trade.setAmount(stock_trade.getDouble("amount"));
                     trade.setSumm(trade.getPrice()*trade.getAmount());
 
                     trade.setTrade_id(String.valueOf(stock_trade.getLong("tid")));
-                    trade.setPair_name(pair_name);
-                    trade.setOperation(stock_trade.getString("type"));
+                    trade.setPair_name(pair_name.toLowerCase());
+                    if (stock_trade.getString("type").compareTo("ask")==0)
+                        trade.setOperation("sell");
+                    if (stock_trade.getString("type").compareTo("bid")==0)
+                        trade.setOperation("buy");
+                    
+                    
                     Calendar cal = Calendar.getInstance();
                     cal.set(1970, Calendar.JANUARY, 1, 0, 0,  0);
                     cal.add(Calendar.SECOND, stock_trade.getInt("timestamp"));
@@ -131,7 +141,7 @@ public class stockImplBtce implements stockInterface {
             //здесь реализовать парсеры данных, раскладывание их в модели
             
             String pairs = "";
-            orders.clear();
+            
             for(String pair_name: stockPairs){
                 pairs = pairs+pair_name+"-";
             }
@@ -139,6 +149,10 @@ public class stockImplBtce implements stockInterface {
                     .header("accept", "application/json")
                     .asJson();
             for(String pair_name: stockPairs){
+                    
+                    orders = new java.util.ArrayList<order>();
+                    orderbook.setOrders(orders);
+                    
                     JSONObject operations = jsonResponse.getBody().getObject().getJSONObject(pair_name);
                     JSONArray bids = operations.getJSONArray("bids");
                     JSONArray asks = operations.getJSONArray("asks");
@@ -148,12 +162,12 @@ public class stockImplBtce implements stockInterface {
 
                         order order = new order();
                         JSONArray stock_order = (JSONArray)o; 
-                        order.setStock_name("BTC-E");
+                        order.setStock_name(stock_name);
                         order.setPrice(Double.valueOf(stock_order.get(0).toString()));
                         order.setAmount(Double.valueOf(stock_order.get(1).toString()));
                         order.setSumm(order.getPrice()*order.getAmount());
                         order.setOperation("bid");
-                        order.setPair_name(pair_name);
+                        order.setPair_name(pair_name.toLowerCase());
 
                         order.setCreateDate(serverTime);
                         orders.add(order);
@@ -163,13 +177,13 @@ public class stockImplBtce implements stockInterface {
 
                         order order = new order();
                         JSONArray stock_order = (JSONArray)o; 
-                        order.setStock_name("BTC-E");
+                        order.setStock_name(stock_name);
                         order.setPrice(Double.valueOf(stock_order.get(0).toString()));
                         order.setAmount(Double.valueOf(stock_order.get(1).toString()));
 
                         order.setSumm(order.getPrice()*order.getAmount());
                         order.setOperation("ask");
-                        order.setPair_name(pair_name);
+                        order.setPair_name(pair_name.toLowerCase());
 
                         order.setCreateDate(serverTime);
                         orders.add(order);

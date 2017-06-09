@@ -61,17 +61,17 @@
     <bean id="dataSourceH2"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:~/webQueue.h2_database" />
+        <property name="url" value="jdbc:h2:~/webQueue.h2_database;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE" />
         <property name="username" value="sa" />
         <property name="password" value="" />
     </bean>
     
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSourceH2" />
+        <property name="dataSource" ref="dataSourceArubaDev" />
         <property name="hibernateProperties">
             <props>
-                <!--<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>-->
-                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                <!--<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop> -->
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.connection.release_mode">auto</prop>

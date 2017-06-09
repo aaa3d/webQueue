@@ -21,7 +21,7 @@
         <junit.version>4.11</junit.version>
         <hibernateVersion>4.3.11.Final</hibernateVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <h2.version>1.4.190</h2.version>
+        <h2.version>1.4.195</h2.version>
     </properties>
 
     <dependencies>

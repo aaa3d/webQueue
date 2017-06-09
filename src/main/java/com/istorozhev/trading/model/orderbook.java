@@ -6,44 +6,53 @@
 package com.istorozhev.trading.model;
 
 import com.yarregion.webqueue.webqueue.talon;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
  * @author istorozhev
- * 
  */
 @Entity
-@Table(name="t_order")
-public class order extends baseTradeModel{
+public class orderbook extends baseTradeModel{
     @Getter
     @Setter
-    private String operation;
+    private Double ask_quantity;
     
     @Getter
     @Setter
-    private double price;
+    private Double ask_amount;
     
     @Getter
     @Setter
-    private double amount;
+    private Double ask_top;
+    
     
     @Getter
     @Setter
-    private double summ;
+    private Double bid_quantity;
     
     @Getter
     @Setter
-    @ManyToOne(cascade=CascadeType.ALL , fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderbook_id", insertable = true, columnDefinition = "integer", foreignKey = @ForeignKey(name = "FK_ORDERBOOK"))
-    private orderbook orderbook;
+    private Double bid_amount;
+    
+    @Getter
+    @Setter
+    private Double bid_top;
+    
+    @Getter
+    @Setter
+    @OneToMany(mappedBy="orderbook", cascade=CascadeType.ALL , fetch = FetchType.LAZY)
+    private List<order> orders;
+    
+    
     
 }
