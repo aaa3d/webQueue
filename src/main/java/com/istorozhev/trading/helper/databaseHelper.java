@@ -5,7 +5,8 @@
  */
 package com.istorozhev.trading.helper;
 
-import com.istorozhev.trading.model.order;
+import com.istorozhev.trading.model.orderbook;
+import com.istorozhev.trading.model.orderbook_details;
 import com.istorozhev.trading.model.trade;
 import com.istorozhev.trading.stock.stockInterface;
 import org.hibernate.Criteria;
@@ -36,8 +37,12 @@ public class databaseHelper {
             //sessionFactoryAruba.getCurrentSession().save(trade);
         }
         
-        //save all orders for this time
-        sessionFactory.getCurrentSession().save(stock.getOrderbook());
+        for(orderbook orderbook:stock.getOrderbooks()){
+            
+            sessionFactory.getCurrentSession().save(orderbook);
+            //sessionFactoryAruba.getCurrentSession().save(trade);
+        }
+        
         
         
         

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Controller;
 public class tradingWorker {
     
     @Autowired databaseHelper database;
-    @Scheduled(initialDelay = 20, fixedDelay=30000)
+    @Scheduled(initialDelay = 20, fixedDelay=60000)
     public void doSomething() {
         stockInterface btce = new stockImplBtce("BTC-E");
         

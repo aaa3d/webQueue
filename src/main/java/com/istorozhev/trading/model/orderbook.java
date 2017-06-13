@@ -8,6 +8,7 @@ package com.istorozhev.trading.model;
 import com.yarregion.webqueue.webqueue.talon;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -51,7 +52,8 @@ public class orderbook extends baseTradeModel{
     @Getter
     @Setter
     @OneToMany(mappedBy="orderbook", cascade=CascadeType.ALL , fetch = FetchType.LAZY)
-    private List<order> orders;
+    @Column(name="orderbook_id", nullable = false)
+    private List<orderbook_details> orderbook_details;
     
     
     

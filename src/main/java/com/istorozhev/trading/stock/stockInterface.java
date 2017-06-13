@@ -5,7 +5,7 @@
  */
 package com.istorozhev.trading.stock;
 
-import com.istorozhev.trading.model.order;
+import com.istorozhev.trading.model.orderbook_details;
 import com.istorozhev.trading.model.orderbook;
 import com.istorozhev.trading.model.ticker;
 import com.istorozhev.trading.model.trade;
@@ -25,6 +25,6 @@ public interface stockInterface {
     public void loadData();
     //public List<order> getOrders();
     public List<trade> getTrades();
-    public orderbook getOrderbook();
+    public List<orderbook> getOrderbooks();
     
 }

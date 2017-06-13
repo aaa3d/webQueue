@@ -6,7 +6,8 @@
 package com.istorozhev.trading.stock;
 
 
-import com.istorozhev.trading.model.order;
+import com.istorozhev.trading.model.orderbook;
+import com.istorozhev.trading.model.orderbook_details;
 import com.istorozhev.trading.model.trade;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -150,8 +151,14 @@ public class stockImplBtce extends stockAbstract implements stockInterface{
                     .asJson();
             for(String pair_name: stockPairs){
                     
-                    orders = new java.util.ArrayList<order>();
-                    orderbook.setOrders(orders);
+                    orderbook orderbook = new orderbook();
+                    orderbooks.add(orderbook);
+                    orderbook.setCreateDate(serverTime);
+                    orderbook.setPair_name(pair_name.toLowerCase());
+                    orderbook.setStock_name(stock_name);
+                    
+                    orders = new java.util.ArrayList<orderbook_details>();
+                    orderbook.setOrderbook_details(orders);
                     
                     JSONObject operations = jsonResponse.getBody().getObject().getJSONObject(pair_name);
                     JSONArray bids = operations.getJSONArray("bids");
@@ -160,7 +167,7 @@ public class stockImplBtce extends stockAbstract implements stockInterface{
                     
                     for( Object o : bids){
 
-                        order order = new order();
+                        orderbook_details order = new orderbook_details(orderbook);
                         JSONArray stock_order = (JSONArray)o; 
                         order.setStock_name(stock_name);
                         order.setPrice(Double.valueOf(stock_order.get(0).toString()));
@@ -175,7 +182,7 @@ public class stockImplBtce extends stockAbstract implements stockInterface{
 
                     for( Object o : asks){
 
-                        order order = new order();
+                        orderbook_details order = new orderbook_details(orderbook);
                         JSONArray stock_order = (JSONArray)o; 
                         order.setStock_name(stock_name);
                         order.setPrice(Double.valueOf(stock_order.get(0).toString()));

@@ -5,7 +5,7 @@
  */
 package com.istorozhev.trading.stock;
 
-import com.istorozhev.trading.model.order;
+import com.istorozhev.trading.model.orderbook_details;
 import com.istorozhev.trading.model.orderbook;
 import com.istorozhev.trading.model.ticker;
 import com.istorozhev.trading.model.trade;
@@ -19,20 +19,20 @@ import lombok.Getter;
  * @author istorozhev
  */
 public abstract class stockAbstract implements stockInterface{
-    protected List<order> orders = new java.util.ArrayList<order>();
+    protected List<orderbook_details> orders = new java.util.ArrayList<orderbook_details>();
     protected List<trade> trades = new java.util.ArrayList<trade>();
     protected ticker ticker = new ticker();
     
     
-    protected orderbook orderbook = new orderbook();
+    protected List<orderbook> orderbooks = new ArrayList<orderbook>();
     
     protected List<String> stockPairs = new ArrayList<String>();
     protected Calendar serverTime = Calendar.getInstance();;
     protected String stock_name;
     
     
-    public orderbook getOrderbook(){
-        return orderbook;
+    public List<orderbook> getOrderbooks(){
+        return orderbooks;
     }
     
     

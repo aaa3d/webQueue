@@ -6,7 +6,8 @@
 package com.istorozhev.trading.stock;
 
 
-import com.istorozhev.trading.model.order;
+import com.istorozhev.trading.model.orderbook;
+import com.istorozhev.trading.model.orderbook_details;
 import com.istorozhev.trading.model.trade;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -127,21 +128,25 @@ public class stockImplExmo extends stockAbstract implements stockInterface{
                     JSONObject operations = jsonResponse.getBody().getObject().getJSONObject(pair_name);    
                     JSONArray bids = operations.getJSONArray("bid");
                     JSONArray asks = operations.getJSONArray("ask");
-                    
-                    orders = new java.util.ArrayList<order>();
-                    orderbook.setOrders(orders);
+                    orderbook orderbook = new orderbook();
+                    orderbooks.add(orderbook);
+                    orders = new java.util.ArrayList<orderbook_details>();
+                    orderbook.setOrderbook_details(orders);
+                    orderbook.setCreateDate(serverTime);
+                    orderbook.setPair_name(pair_name.toLowerCase());
+                    orderbook.setStock_name(stock_name);
                     orderbook.setAsk_quantity(operations.getDouble("ask_quantity"));
-                    orderbook.setAsk_quantity(operations.getDouble("ask_amount"));
-                    orderbook.setAsk_quantity(operations.getDouble("ask_top"));
-                    orderbook.setAsk_quantity(operations.getDouble("bid_quantity"));
-                    orderbook.setAsk_quantity(operations.getDouble("bid_amount"));
-                    orderbook.setAsk_quantity(operations.getDouble("bid_top"));
+                    orderbook.setAsk_amount(operations.getDouble("ask_amount"));
+                    orderbook.setAsk_top(operations.getDouble("ask_top"));
+                    orderbook.setBid_quantity(operations.getDouble("bid_quantity"));
+                    orderbook.setBid_amount(operations.getDouble("bid_amount"));
+                    orderbook.setBid_top(operations.getDouble("bid_top"));
                     
 
                     
                     for( Object o : bids){
 
-                        order order = new order();
+                        orderbook_details order = new orderbook_details(orderbook);
                         JSONArray stock_order = (JSONArray)o; 
                         order.setStock_name(stock_name);
                         order.setPrice(Double.valueOf(stock_order.get(0).toString()));
@@ -156,7 +161,7 @@ public class stockImplExmo extends stockAbstract implements stockInterface{
 
                     for( Object o : asks){
 
-                        order order = new order();
+                        orderbook_details order = new orderbook_details(orderbook);
                         JSONArray stock_order = (JSONArray)o; 
                         order.setStock_name(stock_name);
                         order.setPrice(Double.valueOf(stock_order.get(0).toString()));

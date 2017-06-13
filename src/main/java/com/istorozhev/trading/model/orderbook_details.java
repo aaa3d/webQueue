@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -22,8 +23,8 @@ import lombok.Setter;
  * 
  */
 @Entity
-@Table(name="t_order")
-public class order extends baseTradeModel{
+@Table(indexes = {@Index(columnList = "orderbook_id", name = "idx_orderbook_id")})
+public class orderbook_details extends baseTradeModel{
     @Getter
     @Setter
     private String operation;
@@ -43,7 +44,12 @@ public class order extends baseTradeModel{
     @Getter
     @Setter
     @ManyToOne(cascade=CascadeType.ALL , fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderbook_id", insertable = true, columnDefinition = "integer", foreignKey = @ForeignKey(name = "FK_ORDERBOOK"))
+    @JoinColumn(name = "orderbook_id", nullable = false, updatable = false, insertable = true, columnDefinition = "integer")
     private orderbook orderbook;
+    
+    
+    public orderbook_details(orderbook parent){
+        orderbook = parent;
+    }
     
 }

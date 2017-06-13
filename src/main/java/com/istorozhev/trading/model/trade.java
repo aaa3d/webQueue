@@ -6,6 +6,8 @@
 package com.istorozhev.trading.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +16,9 @@ import lombok.Setter;
  * @author istorozhev
  */
 
+
 @Entity
+@Table(indexes = {@Index(columnList = "trade_id", name = "idx_trade_id")})
 public class trade extends baseTradeModel {
     
     @Getter
