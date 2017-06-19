@@ -9,8 +9,10 @@ import com.istorozhev.trading.model.orderbook;
 import com.istorozhev.trading.model.orderbook_details;
 import com.istorozhev.trading.model.trade;
 import com.istorozhev.trading.stock.stockInterface;
+import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,9 +44,18 @@ public class databaseHelper {
             sessionFactory.getCurrentSession().save(orderbook);
             //sessionFactoryAruba.getCurrentSession().save(trade);
         }
+    }
+    
+    @Transactional
+    public List<trade> getTrades(){
+            
+        org.hibernate.Criteria criteria = null;
+        
+        criteria = sessionFactory.getCurrentSession().createCriteria(trade.class);
         
         
-        
-        
+        criteria.add(Restrictions.eq("pair_name", "btc_usd"));
+        criteria.add(Restrictions.eq("stock_name", "BTC-E"));
+        return criteria.list();
     }
 }
